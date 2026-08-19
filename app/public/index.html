@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keyboard Cemetery</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>⌨️ KEYBOARD CEMETERY</h1>
+    <p>ระบบติดตามอุปกรณ์ห้อง Computer Lab</p>
+  </header>
+
+  <main>
+    <!-- Dashboard: สรุปจำนวนคีย์บอร์ดแยกตามสถานะ -->
+    <section class="dashboard" id="dashboard">
+      <div class="stat-card total">
+        <span class="stat-label">ทั้งหมด</span>
+        <span class="stat-value" id="stat-total">-</span>
+      </div>
+      <div class="stat-card working">
+        <span class="stat-label">ใช้งานได้</span>
+        <span class="stat-value" id="stat-working">-</span>
+      </div>
+      <div class="stat-card broken">
+        <span class="stat-label">เสีย</span>
+        <span class="stat-value" id="stat-broken">-</span>
+      </div>
+      <div class="stat-card repairing">
+        <span class="stat-label">กำลังซ่อม</span>
+        <span class="stat-value" id="stat-repairing">-</span>
+      </div>
+    </section>
+
+    <!-- ฟอร์มเพิ่มคีย์บอร์ดใหม่ -->
+    <section class="card">
+      <h2>เพิ่มคีย์บอร์ด</h2>
+      <form id="add-form">
+        <div class="form-grid">
+          <input type="text" id="f-code" placeholder="รหัสคีย์บอร์ด (เช่น KB-004)" required />
+          <input type="text" id="f-lab" placeholder="ห้องแล็บ (เช่น LAB-301)" required />
+          <input type="text" id="f-brand" placeholder="ยี่ห้อ" required />
+          <input type="text" id="f-model" placeholder="รุ่น" required />
+          <select id="f-status">
+            <option value="Working">ใช้งานได้ (Working)</option>
+            <option value="Broken">เสีย (Broken)</option>
+            <option value="Repairing">กำลังซ่อม (Repairing)</option>
+          </select>
+          <input type="text" id="f-problem" placeholder="รายละเอียดปัญหา (ถ้ามี)" />
+        </div>
+        <button type="submit">เพิ่มคีย์บอร์ด</button>
+      </form>
+      <p id="form-message" class="message"></p>
+    </section>
+
+    <!-- ตารางรายการคีย์บอร์ดทั้งหมด -->
+    <section class="card">
+      <h2>รายการคีย์บอร์ดทั้งหมด</h2>
+      <table id="keyboard-table">
+        <thead>
+          <tr>
+            <th>รหัส</th>
+            <th>ตำแหน่ง</th>
+            <th>ยี่ห้อ / รุ่น</th>
+            <th>สถานะ</th>
+            <th>ปัญหา</th>
+            <th>การจัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="keyboard-tbody">
+          <!-- แถวข้อมูลถูกเพิ่มเข้ามาโดย app.js -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Keyboard Cemetery</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

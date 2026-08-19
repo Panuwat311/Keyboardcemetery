@@ -1,0 +1,187 @@
+/* Keyboard Cemetery - ธีมสีเข้มแบบเรียบง่ายสไตล์อุปกรณ์ห้องแล็บ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Courier New", Consolas, monospace;
+  background-color: #1b1d21;
+  color: #e6e6e6;
+}
+
+.site-header {
+  background-color: #101114;
+  border-bottom: 3px solid #4caf50;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.site-header h1 {
+  margin: 0;
+  letter-spacing: 2px;
+  color: #4caf50;
+}
+
+.site-header p {
+  margin: 4px 0 0;
+  color: #9a9a9a;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* ส่วน Dashboard */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background-color: #25272c;
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+  border-left: 5px solid #555;
+}
+
+.stat-card .stat-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #9a9a9a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-card .stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 6px;
+}
+
+.stat-card.total { border-left-color: #6c7ae0; }
+.stat-card.working { border-left-color: #4caf50; }
+.stat-card.broken { border-left-color: #e05656; }
+.stat-card.repairing { border-left-color: #e0a856; }
+
+/* กล่องเนื้อหา (Cards) */
+.card {
+  background-color: #25272c;
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.card h2 {
+  margin-top: 0;
+  color: #4caf50;
+  font-size: 1.1rem;
+}
+
+/* ฟอร์มเพิ่มคีย์บอร์ด */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+input, select, button {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background-color: #1b1d21;
+  color: #e6e6e6;
+}
+
+button {
+  background-color: #4caf50;
+  color: #101114;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+}
+
+button:hover {
+  background-color: #5fc563;
+}
+
+.message {
+  min-height: 1.2em;
+  font-size: 0.9rem;
+}
+
+.message.error { color: #e05656; }
+.message.success { color: #4caf50; }
+
+/* ตารางรายการคีย์บอร์ด */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid #3a3c42;
+  font-size: 0.9rem;
+}
+
+th {
+  color: #9a9a9a;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.status-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.status-badge.Working { background-color: #234d26; color: #7be389; }
+.status-badge.Broken { background-color: #4d2323; color: #e88a8a; }
+.status-badge.Repairing { background-color: #4d3f23; color: #e8c48a; }
+
+.row-actions select,
+.row-actions button {
+  font-size: 0.8rem;
+  padding: 4px 6px;
+}
+
+.row-actions button.delete-btn {
+  background-color: #e05656;
+  color: #fff;
+}
+
+.row-actions button.delete-btn:hover {
+  background-color: #ee7a7a;
+}
+
+footer {
+  text-align: center;
+  color: #666;
+  font-size: 0.8rem;
+  padding: 16px;
+}
+
+@media (max-width: 600px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

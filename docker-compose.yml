@@ -1,0 +1,67 @@
+# -----------------------------------------------------------------------
+# docker-compose.yml สำหรับ Keyboard Cemetery
+#
+# กำหนด service สองตัวที่ทำงานเป็นคนละ container และสื่อสารกัน
+# ผ่าน network เริ่มต้นที่ Compose สร้างขึ้นให้โปรเจกต์นี้:
+#   - app : เว็บแอปพลิเคชัน Node.js + Express (build จาก Dockerfile ของเรา)
+#   - db  : ฐานข้อมูล PostgreSQL (official image)
+#
+# container app จะเชื่อมต่อไปยังฐานข้อมูล โดยใช้ชื่อ service "db"
+# เป็น hostname (Compose มี DNS ภายในให้อัตโนมัติ) โดยไม่ใช้ "localhost"
+# -----------------------------------------------------------------------
+
+services:
+
+  # ---------------------------------------------------------------------
+  # Application service - Node.js + Express
+  # ---------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: keyboard-app
+    ports:
+      # เชื่อมโยง port 8080 ของเครื่อง host เข้ากับ port 3000 ของ container
+      # (ที่ Express กำลัง listen อยู่)
+      - "8080:3000"
+    environment:
+      # environment variables เหล่านี้บอกให้แอปรู้วิธีเชื่อมต่อกับ container ฐานข้อมูล
+      # DB_HOST ต้องเป็นชื่อ service ของ Compose (db) ไม่ใช่ "localhost"
+      # เพราะ app และ database ทำงานอยู่คนละ container กัน
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: keyboard_cemetery
+      DB_USER: keyboard_admin
+      DB_PASSWORD: keyboard_pass
+    depends_on:
+      # กำหนดให้ container db เริ่มทำงานก่อน container app
+      # (แอปเองก็มีการ retry การเชื่อมต่อฐานข้อมูลตอนเริ่มทำงานด้วย
+      # เพื่อความปลอดภัย เนื่องจากสถานะ "started" ไม่ได้แปลว่า "พร้อมใช้งาน" เสมอไป)
+      - db
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------
+  # Database service - PostgreSQL
+  # ---------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: keyboard-db
+    environment:
+      # ค่าต้องตรงกับค่า DB_* ที่ใช้ใน service app ด้านบน
+      POSTGRES_DB: keyboard_cemetery
+      POSTGRES_USER: keyboard_admin
+      POSTGRES_PASSWORD: keyboard_pass
+    volumes:
+      # เก็บข้อมูล PostgreSQL ไว้นอก writable layer ของ container
+      # เพื่อให้ข้อมูลยังคงอยู่แม้จะรัน "docker compose down" (ลบ container)
+      - keyboard_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+# ---------------------------------------------------------------------
+# Named volume ที่ใช้เก็บข้อมูล PostgreSQL แบบถาวรบนเครื่อง host
+# volume นี้จะไม่ถูกลบด้วย "docker compose down" (จะถูกลบก็ต่อเมื่อใช้
+# "docker compose down -v" เท่านั้น) ดังนั้นข้อมูลคีย์บอร์ดจะยังคงอยู่
+# แม้ container จะถูกสร้างใหม่
+# ---------------------------------------------------------------------
+volumes:
+  keyboard_data:
