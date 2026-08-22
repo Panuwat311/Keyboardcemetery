@@ -1,12 +1,13 @@
 # -----------------------------------------------------------------------
 # docker-compose.yml สำหรับ Keyboard Cemetery
 #
-# กำหนด service สองตัวที่ทำงานเป็นคนละ container และสื่อสารกัน
+# กำหนด service สามตัวที่ทำงานเป็นคนละ container และสื่อสารกัน
 # ผ่าน network เริ่มต้นที่ Compose สร้างขึ้นให้โปรเจกต์นี้:
-#   - app : เว็บแอปพลิเคชัน Node.js + Express (build จาก Dockerfile ของเรา)
-#   - db  : ฐานข้อมูล PostgreSQL (official image)
+#   - app     : เว็บแอปพลิเคชัน Node.js + Express (build จาก Dockerfile ของเรา)
+#   - db      : ฐานข้อมูล PostgreSQL (official image)
+#   - pgadmin : เว็บ UI สำหรับดู/จัดการฐานข้อมูล PostgreSQL (official image)
 #
-# container app จะเชื่อมต่อไปยังฐานข้อมูล โดยใช้ชื่อ service "db"
+# container app และ pgadmin จะเชื่อมต่อไปยังฐานข้อมูล โดยใช้ชื่อ service "db"
 # เป็น hostname (Compose มี DNS ภายในให้อัตโนมัติ) โดยไม่ใช้ "localhost"
 # -----------------------------------------------------------------------
 
@@ -57,11 +58,35 @@ services:
       - keyboard_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  # ---------------------------------------------------------------------
+  # pgAdmin service - เว็บ UI สำหรับดู/จัดการฐานข้อมูล PostgreSQL
+  # เป็น container ที่ 3 ของโปรเจกต์ ใช้สาธิตว่า container หลายตัว
+  # สามารถเชื่อมต่อไปยัง database container เดียวกันได้พร้อมกัน
+  # ---------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: keyboard-pgadmin
+    environment:
+      # อีเมล/รหัสผ่านสำหรับ login เข้าหน้าเว็บ pgAdmin (ไม่เกี่ยวกับ
+      # user/password ของ PostgreSQL เอง)
+      PGADMIN_DEFAULT_EMAIL: admin@keyboardcemetery.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+    ports:
+      # เข้าใช้งานหน้าเว็บ pgAdmin ผ่าน host port 5050
+      - "5050:80"
+    volumes:
+      # เก็บการตั้งค่า/การเชื่อมต่อที่บันทึกไว้ใน pgAdmin ให้อยู่ถาวร
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+    restart: unless-stopped
+
 # ---------------------------------------------------------------------
-# Named volume ที่ใช้เก็บข้อมูล PostgreSQL แบบถาวรบนเครื่อง host
-# volume นี้จะไม่ถูกลบด้วย "docker compose down" (จะถูกลบก็ต่อเมื่อใช้
-# "docker compose down -v" เท่านั้น) ดังนั้นข้อมูลคีย์บอร์ดจะยังคงอยู่
-# แม้ container จะถูกสร้างใหม่
+# Named volume ที่ใช้เก็บข้อมูลแบบถาวรบนเครื่อง host
+# volume เหล่านี้จะไม่ถูกลบด้วย "docker compose down" (จะถูกลบก็ต่อเมื่อใช้
+# "docker compose down -v" เท่านั้น) ดังนั้นข้อมูลคีย์บอร์ดและการตั้งค่า
+# pgAdmin จะยังคงอยู่ แม้ container จะถูกสร้างใหม่
 # ---------------------------------------------------------------------
 volumes:
   keyboard_data:
+  pgadmin_data:
